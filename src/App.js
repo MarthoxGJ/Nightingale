@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { CoordinateGraph, MusicPlayer } from "./components";
+import { CoordinateGraph, MusicPlayer, TimeLineGraph } from "./components";
 
 const App = () => {
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
+  const [progress, setProgress] = useState(0);
+
+  const xValues = Array.from({ length: 100 }, (_, i) => i / 49 - 1); // Example array of 100 x values between -1 and 1
 
   const handleTimeUpdate = (e) => {
     const audio = e.target;
@@ -11,15 +14,17 @@ const App = () => {
     const duration = audio.duration;
     const progress = currentTime / duration;
 
-    // Change the setX and setY to take the n value of the emotional data
-    setX(progress * 2 - 1); // Convert progress (0 to 1) to the range (-1 to 1)
+    setX(xValues[Math.floor(progress * (xValues.length - 1))]); // Get the x value based on progress
     setY(Math.sin(2 * Math.PI * progress)); // Calculate the sine wave value based on progress
+    setProgress(progress);
   };
 
   return (
     <div>
-      <h1>Coordinate Graph and Music Player</h1>
+      <h1>Coordinate Graph, Time Line Graph, and Music Player</h1>
       <CoordinateGraph x={x} y={y} />
+      <TimeLineGraph xValues={xValues} progress={progress} />
+      <TimeLineGraph xValues={xValues} progress={progress} />
       <MusicPlayer onTimeUpdate={handleTimeUpdate} />
     </div>
   );
