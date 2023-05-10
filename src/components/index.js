@@ -1,3 +1,2 @@
-import { CoordinateGraph } from "./CoordinateGraph";
-
-export { CoordinateGraph };
+export { default as CoordinateGraph } from "./CoordinateGraph/CoordinateGraph";
+export { default as MusicPlayer } from "./MusicPlayer/MusicPlayer";
