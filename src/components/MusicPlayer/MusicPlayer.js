@@ -1,12 +1,12 @@
 import React, { useState, useRef } from "react";
 import ProgressBar from "./ProgressBar/ProgressBar";
 
-const MusicPlayer = ({ onTimeUpdate }) => {
+const MusicPlayer = ({ onTimeUpdate, handleCsvUpdate }) => {
   const [file, setFile] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
 
-  const handleFileChange = (e) => {
+  const handleSongChange = (e) => {
     setFile(URL.createObjectURL(e.target.files[0]));
     setIsPlaying(false);
   };
@@ -23,7 +23,18 @@ const MusicPlayer = ({ onTimeUpdate }) => {
 
   return (
     <div>
-      <input type="file" accept="audio/*" onChange={handleFileChange} />
+      <div>
+        Song
+        <input type="file" accept="audio/*" onChange={handleSongChange} />
+      </div>
+      <div>
+        Valence
+        <input type="file" accept=".csv" onChange={handleCsvUpdate} />
+      </div>
+      <div>
+        Arousal
+        <input type="file" accept=".csv" onChange={handleCsvUpdate} />
+      </div>
       {file && (
         <>
           <audio

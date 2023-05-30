@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const TimeLineGraph = ({ xValues, progress }) => {
+const TimeLineGraph = ({ values, progress }) => {
   const canvasRef = useRef(null);
   const [points, setPoints] = useState([]);
 
   useEffect(() => {
-    const index = Math.floor(progress * (xValues.length - 1));
-    const newPoints = xValues.slice(0, index + 1).map((x) => ({ x, y: x }));
-
+    const index = Math.floor(progress * (values.length - 1));
+    const newPoints = values
+      .slice(0, index + 1)
+      .map((value, index) => ({ x: index, y: value }));
     setPoints(newPoints);
-  }, [xValues, progress]);
+  }, [values, progress]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -20,6 +21,9 @@ const TimeLineGraph = ({ xValues, progress }) => {
   const draw = (ctx, points) => {
     const canvasWidth = ctx.canvas.width;
     const canvasHeight = ctx.canvas.height;
+
+    // Set the background color
+    ctx.strokeStyle = "#FFFFFF";
 
     // Clear the canvas
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -32,10 +36,9 @@ const TimeLineGraph = ({ xValues, progress }) => {
 
     if (points.length > 1) {
       ctx.beginPath();
-      ctx.moveTo(points[0].x, points[0].y);
 
-      for (let i = 1; i < points.length; i++) {
-        const pointX = (points[i].x + 1) * (canvasWidth / 2);
+      for (let i = 0; i < points.length; i++) {
+        const pointX = (points[i].x / (points.length - 1)) * canvasWidth;
         const pointY = (1 - points[i].y) * (canvasHeight / 2);
         ctx.lineTo(pointX, pointY);
       }
@@ -44,11 +47,7 @@ const TimeLineGraph = ({ xValues, progress }) => {
     }
   };
 
-  return (
-    <div>
-      <canvas ref={canvasRef} width="300" height="150" />
-    </div>
-  );
+  return <canvas ref={canvasRef} width={300} height={150} />;
 };
 
 export default TimeLineGraph;
