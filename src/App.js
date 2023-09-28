@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CoordinateGraph, MusicPlayer, TimeLineGraph } from "./components";
 
-import "./App.css";
+import "./App.sass";
 
 const App = () => {
   const [x, setX] = useState(0);

@@ -41,12 +41,12 @@ const ProgressBar = ({ audioRef }) => {
       style={{
         width: "100%",
         height: "5px",
-        background: "#eee",
+        background: "#213555",
         cursor: "pointer",
       }}
     >
       <div
-        style={{ width: `${progress}%`, height: "100%", background: "#007bff" }}
+        style={{ width: `${progress}%`, height: "100%", background: "#E5D283" }}
       />
     </div>
   );
