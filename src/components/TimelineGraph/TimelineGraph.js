@@ -23,7 +23,7 @@ const TimeLineGraph = ({ values, progress }) => {
     const canvasHeight = ctx.canvas.height;
 
     // Set the background color
-    ctx.strokeStyle = "#FFFFFF";
+    ctx.strokeStyle = "#000000";
 
     // Clear the canvas
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);

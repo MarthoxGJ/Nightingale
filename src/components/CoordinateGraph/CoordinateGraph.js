@@ -11,6 +11,9 @@ const CoordinateGraph = ({ x, y }) => {
     // Clear the canvas
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
+    // Select the color of the axis
+    ctx.strokeStyle = "black";
+    
     // Draw the axis
     ctx.beginPath();
     ctx.moveTo(canvasWidth / 2, 0);
@@ -18,6 +21,9 @@ const CoordinateGraph = ({ x, y }) => {
     ctx.moveTo(0, canvasHeight / 2);
     ctx.lineTo(canvasWidth, canvasHeight / 2);
     ctx.stroke();
+    
+    // Select the color of the point
+    ctx.fillStyle = "red";
 
     // Draw the point
     const pointX = (x + 1) * (canvasWidth / 2);
