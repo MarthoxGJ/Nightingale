@@ -10,18 +10,27 @@ const App = () => {
   const [valence, setValence] = useState([]);
   const [arousal, setArousal] = useState([]);
 
-  const handleDataUpdate = (valence, arousal) => {
-    setValence(valence);
-    setArousal(arousal);
+  const getMaxRange = (valenceArray, arousalArray) => {
+    const maxValence = Math.max(...valenceArray.map(Math.abs));
+    const maxArousal = Math.max(...arousalArray.map(Math.abs));
+    return Math.max(maxValence, maxArousal);
+  };
+
+  const handleDataUpdate = (valenceArray, arousalArray) => {
+    const maxRange = getMaxRange(valenceArray, arousalArray);
+    const normalizedValence = valenceArray.map(valence => valence / maxRange);
+    const normalizedArousal = arousalArray.map(arousal => arousal / maxRange);
+    setValence(normalizedValence);
+    setArousal(normalizedArousal);
   };
 
   const handleTimeUpdate = (e) => {
     const audio = e.target;
     const currentTime = audio.currentTime;
     const duration = audio.duration;
-    const progress = currentTime / duration;
-    setX(valence[Math.floor(progress * (valence.length - 1))]);
-    setY(arousal[Math.floor(progress * (arousal.length - 1))]);
+    const progress = Math.floor((currentTime / duration) * valence.length);
+    setX(valence[progress]);
+    setY(arousal[progress]);
     setProgress(progress);
   };
 
@@ -56,7 +65,7 @@ const App = () => {
       <div className="music-player">
         <MusicPlayer
           onTimeUpdate={handleTimeUpdate}
-          handleDataUpdate={handleDataUpdate}
+          onDataUpdate={handleDataUpdate}
         />
       </div>
     </div>

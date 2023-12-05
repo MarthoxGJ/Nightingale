@@ -7,12 +7,9 @@ const CoordinateGraph = ({ x, y }) => {
     const { x, y } = position;
     const canvasWidth = ctx.canvas.width;
     const canvasHeight = ctx.canvas.height;
-    const padding = 10; // Add padding to prevent overflow
-
-    // Clear the canvas
+  
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-    // Draw the axis
+  
     ctx.strokeStyle = "black";
     ctx.beginPath();
     ctx.moveTo(canvasWidth / 2, 0);
@@ -20,11 +17,10 @@ const CoordinateGraph = ({ x, y }) => {
     ctx.moveTo(0, canvasHeight / 2);
     ctx.lineTo(canvasWidth, canvasHeight / 2);
     ctx.stroke();
-
-    // Draw the point
+  
     ctx.fillStyle = "red";
-    const pointX = padding + ((x + 1) / 2) * (canvasWidth - 2 * padding);
-    const pointY = padding + ((1 - y) / 2) * (canvasHeight - 2 * padding);
+    const pointX = (canvasWidth / 2) + (x * canvasWidth / 2);
+    const pointY = (canvasHeight / 2) - (y * canvasHeight / 2);
     ctx.beginPath();
     ctx.arc(pointX, pointY, 5, 0, 2 * Math.PI);
     ctx.fill();

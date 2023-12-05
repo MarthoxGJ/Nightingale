@@ -4,7 +4,7 @@ import ProgressBar from "./ProgressBar/ProgressBar";
 import arousalCSV from "../../assets/arousal/arousal.csv"
 import valenceCSV from "../../assets/valence/valence.csv"
 
-const MusicPlayer = ({ onTimeUpdate, handleDataUpdate }) => {
+const MusicPlayer = ({ onTimeUpdate, onDataUpdate }) => {
   const [songsIDs, setSongsIDs] = useState([]);
   const [valence, setValence] = useState([]);
   const [arousal, setArousal] = useState([]);
@@ -30,7 +30,7 @@ const MusicPlayer = ({ onTimeUpdate, handleDataUpdate }) => {
       setFile(URL.createObjectURL(blob));
       setSongName(song);
       setIsPlaying(false);
-      handleDataUpdate(
+      onDataUpdate(
         valence.find(songData => songData.songID === song.substring(0, song.length - 4)).data,
         arousal.find(songData => songData.songID === song.substring(0, song.length - 4)).data
       );
@@ -53,18 +53,19 @@ const MusicPlayer = ({ onTimeUpdate, handleDataUpdate }) => {
     }
   };
 
-  const parseCSV = (csv) => {
-    return fetch(csv)
-    .then(response => response.text())
-    .then(csvText => {
+  const parseCSV = async (csv) => {
+    try {
+      const response = await fetch(csv);
+      const csvText = await response.text();
       const csvData = csvText.split("\n");
       const songData = csvData.map(row => {
         const [songID, songName, ...data] = row.split(",");
         return { songID, songName, data };
-      })
+      });
       return songData;
-    })
-    .catch(error => console.error('Error fetching CSV:', error));
+    } catch (error) {
+      return console.error('Error fetching CSV:', error);
+    }
   }
 
   const getSongName = (songFileName) => {
