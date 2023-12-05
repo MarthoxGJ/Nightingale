@@ -31,7 +31,7 @@ const App = () => {
   return (
     <div className="container">
       <h1 className="page-title">
-        Coordinate Graph, Time Line Graph, and Music Player
+      ENSA Dataset music player
       </h1>
       <div className="coordinate-graph-container">
         <p className="YAxis">Arousal</p>
