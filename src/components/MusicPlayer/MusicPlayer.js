@@ -1,16 +1,46 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ProgressBar from "./ProgressBar/ProgressBar";
 
-const MusicPlayer = ({ onTimeUpdate, handleCsvUpdate }) => {
+import arousalCSV from "../../assets/arousal/arousal.csv"
+import valenceCSV from "../../assets/valence/valence.csv"
+
+const MusicPlayer = ({ onTimeUpdate, handleDataUpdate }) => {
+  const [songsIDs, setSongsIDs] = useState([]);
+  const [valence, setValence] = useState([]);
+  const [arousal, setArousal] = useState([]);
+
   const [file, setFile] = useState(null);
-  const [songName, setSongName] = useState(null);
+  const [songName, setSongName] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
   const audioRef = useRef(null);
 
   const handleSongChange = (e) => {
-    setFile(URL.createObjectURL(e.target.files[0]));
-    setSongName(e.target.files[0].name);
-    setIsPlaying(false);
+    const song = e.target.value;
+    setLoading(true);
+    fetch(`http://104.237.5.250/evaluacionensa/${song}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.blob();
+    })
+    .then(blob => {
+      setFile(URL.createObjectURL(blob));
+      setSongName(song);
+      setIsPlaying(false);
+      handleDataUpdate(
+        valence.find(songData => songData.songID === song.substring(0, song.length - 4)).data,
+        arousal.find(songData => songData.songID === song.substring(0, song.length - 4)).data
+      );
+    })
+    .catch(error => {
+      console.error('There was an error fetching the song:', error);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
   };
 
   const togglePlay = () => {
@@ -23,40 +53,71 @@ const MusicPlayer = ({ onTimeUpdate, handleCsvUpdate }) => {
     }
   };
 
+  const parseCSV = (csv) => {
+    return fetch(csv)
+    .then(response => response.text())
+    .then(csvText => {
+      const csvData = csvText.split("\n");
+      const songData = csvData.map(row => {
+        const [songID, songName, ...data] = row.split(",");
+        return { songID, songName, data };
+      })
+      return songData;
+    })
+    .catch(error => console.error('Error fetching CSV:', error));
+  }
+
+  const getSongName = (songFileName) => {
+    const songID = songFileName.substring(0, songFileName.length - 4);
+    const songName = valence.find(song => song.songID === songID).songName;
+    return `(${songID}) ${songName}`;
+  }
+
+  useEffect(() => {
+    parseCSV(arousalCSV).then(data => {
+      setArousal(data);
+    });
+    parseCSV(valenceCSV).then(data => {
+      setValence(data);
+    });
+  } , []);
+
+  useEffect(() => {
+    console.log(valence);
+    fetch('http://104.237.5.250/evaluacionensa/')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.text();
+    })
+    .then(data => {
+      const regex = /href=".*\.mp3"/g;
+      const matches = data.match(regex);
+      const songs = matches.map(match => {
+        return match.substring(6, match.length - 1);
+      });
+      setSongsIDs(songs);
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+  }, [arousal, valence]);
+
   return (
     <div className="controls-container">
-      <label className="select-button" htmlFor="song-file">
-        Select Song{file && <span>{songName}</span>}
-      </label>
-      <input
-        id="song-file"
-        type="file"
-        style={{display:"none"}}
-        accept="audio/*"
-        onChange={handleSongChange}
-      />
-      
-      <label className="select-button" htmlFor="valence-file">
-        Select Valence
-      </label>
-      <input
-        id="valence-file"
-        type="file"
-        style={{display:"none"}}
-        accept=".csv"
-        onChange={handleCsvUpdate}
-      />
-
-      <label className="select-button" htmlFor="valence-file">
-        Select Arousal
-      </label>
-      <input
-        id="arousal-file"
-        type="file"
-        style={{display:"none"}}
-        accept=".csv"
-        onChange={handleCsvUpdate}
-      />
+      <select className="select-button" value={songName} onChange={handleSongChange} disabled={loading}>
+        {loading ? (
+          <option>Loading...</option>
+        ) : (
+          <>
+            <option>Select a song</option>
+            {songsIDs.map(song => (
+              song === songName ? <option key={song} value={song}>{getSongName(song)}</option> : <option key={song} value={song}>{getSongName(song)}</option>
+            ))}
+          </>
+        )}
+      </select>
 
       {file && (
         <>

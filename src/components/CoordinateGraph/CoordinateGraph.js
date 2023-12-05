@@ -7,7 +7,6 @@ const CoordinateGraph = ({ x, y }) => {
     const { x, y } = position;
     const canvasWidth = ctx.canvas.width;
     const canvasHeight = ctx.canvas.height;
-    console.log(canvasWidth, canvasHeight)
 
     // Clear the canvas
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);

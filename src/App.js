@@ -10,14 +10,9 @@ const App = () => {
   const [valence, setValence] = useState([]);
   const [arousal, setArousal] = useState([]);
 
-  const handleCsvUpdate = (e) => {
-    let file = e.target.files[0];
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      const csvData = e.target.result.split("\n");
-      file.name.includes("valence") ? setValence(csvData) : setArousal(csvData);
-    };
-    reader.readAsText(file);
+  const handleDataUpdate = (valence, arousal) => {
+    setValence(valence);
+    setArousal(arousal);
   };
 
   const handleTimeUpdate = (e) => {
@@ -61,7 +56,7 @@ const App = () => {
       <div className="music-player">
         <MusicPlayer
           onTimeUpdate={handleTimeUpdate}
-          handleCsvUpdate={handleCsvUpdate}
+          handleDataUpdate={handleDataUpdate}
         />
       </div>
     </div>
