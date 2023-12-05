@@ -23,20 +23,20 @@ const App = () => {
     const currentTime = audio.currentTime;
     const duration = audio.duration;
     const progress = Math.floor((currentTime / duration) * valence.length);
-    setX(arousal[progress]);
-    setY(valence[progress]);
+    setY(arousal[progress]);
+    setX(valence[progress]);
     setProgress(progress);
   };
 
   return (
     <div className="container">
       <h1 className="page-title">
-      ENSA Dataset music player
+      ENSA Dataset Music Player
       </h1>
       <div className="coordinate-graph-container">
-        <p className="YAxis">Arousal</p>
+        <p className="YAxis">Valence</p>
         <div className="graph-with-label">
-          <p className="XAxis">Valence</p>
+          <p className="XAxis">Arousal</p>
           <CoordinateGraph x={x} y={y} />
         </div>
       </div>
