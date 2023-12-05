@@ -10,16 +10,10 @@ const App = () => {
   const [valence, setValence] = useState([]);
   const [arousal, setArousal] = useState([]);
 
-  const getMaxRange = (valenceArray, arousalArray) => {
-    const maxValence = Math.max(...valenceArray.map(Math.abs));
-    const maxArousal = Math.max(...arousalArray.map(Math.abs));
-    return Math.max(maxValence, maxArousal);
-  };
-
   const handleDataUpdate = (valenceArray, arousalArray) => {
-    const maxRange = getMaxRange(valenceArray, arousalArray);
-    const normalizedValence = valenceArray.map(valence => valence / maxRange);
-    const normalizedArousal = arousalArray.map(arousal => arousal / maxRange);
+    // Every value greater than 1 is set to 1 and every value less than -1 is set to -1
+    const normalizedValence = valenceArray.map((valence) => Math.min(1, Math.max(-1, valence)));
+    const normalizedArousal = arousalArray.map((arousal) => Math.min(1, Math.max(-1, arousal)));
     setValence(normalizedValence);
     setArousal(normalizedArousal);
   };
@@ -29,8 +23,8 @@ const App = () => {
     const currentTime = audio.currentTime;
     const duration = audio.duration;
     const progress = Math.floor((currentTime / duration) * valence.length);
-    setX(valence[progress]);
-    setY(arousal[progress]);
+    setX(arousal[progress]);
+    setY(valence[progress]);
     setProgress(progress);
   };
 

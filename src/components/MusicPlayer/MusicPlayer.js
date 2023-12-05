@@ -70,7 +70,7 @@ const MusicPlayer = ({ onTimeUpdate, onDataUpdate }) => {
 
   const getSongName = (songFileName) => {
     const songID = songFileName.substring(0, songFileName.length - 4);
-    const songName = valence.find(song => song.songID === songID).songName;
+    const songName = valence.find(song => song.songID === songID)?.songName;
     return `(${songID}) ${songName}`;
   }
 
