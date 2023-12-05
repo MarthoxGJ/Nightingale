@@ -83,7 +83,6 @@ const MusicPlayer = ({ onTimeUpdate, handleDataUpdate }) => {
   } , []);
 
   useEffect(() => {
-    console.log(valence);
     fetch('http://104.237.5.250/evaluacionensa/')
     .then(response => {
       if (!response.ok) {

@@ -21,33 +21,40 @@ const TimeLineGraph = ({ values, progress }) => {
   const draw = (ctx, points) => {
     const canvasWidth = ctx.canvas.width;
     const canvasHeight = ctx.canvas.height;
-
+  
     // Set the background color
     ctx.strokeStyle = "#000000";
-
+  
     // Clear the canvas
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
+  
+    // Normalize the y values
+    const maxY = Math.max(...points.map(p => p.y));
+    const minY = Math.min(...points.map(p => p.y));
+  
+    // Function to normalize y values
+    const normalizeY = y => (1 - (y - minY) / (maxY - minY)) * (canvasHeight);
+  
     // Draw the x-axis
     ctx.beginPath();
     ctx.moveTo(0, canvasHeight / 2);
     ctx.lineTo(canvasWidth, canvasHeight / 2);
     ctx.stroke();
-
+  
     if (points.length > 1) {
       ctx.beginPath();
-
+  
       for (let i = 0; i < points.length; i++) {
-        const pointX = (points[i].x / (points.length - 1)) * canvasWidth;
-        const pointY = (1 - points[i].y) * (canvasHeight / 2);
+        const pointX = 0 + (points[i].x / (points.length - 1)) * (canvasWidth);
+        const pointY = normalizeY(points[i].y);
         ctx.lineTo(pointX, pointY);
       }
-
+  
       ctx.stroke();
     }
   };
 
-  return <canvas ref={canvasRef} width={300} height={150} />;
+  return <canvas ref={canvasRef} width={400} height={300} />;
 };
 
 export default TimeLineGraph;
